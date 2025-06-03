@@ -14,8 +14,6 @@ export const columns: ColumnDef<IUser>[] = [
       return <div>Name</div>
     },
     cell: ({ row }) => {
-      // const fname = row.getValue("firstname") as string
-      // const lname = row.getValue("lastname") as string
       const name = row.getValue("name") as string
       return <p className="capitalize">{name}</p>
     },
@@ -46,8 +44,8 @@ export const columns: ColumnDef<IUser>[] = [
     },
     cell: ({ row }) => {
       const val = row.getValue("role") as string
-      const variant = val === "admin" ? "var1"
-        : val === "technician" ? "var2"
+      const variant = val === "ADMIN" ? "var1"
+        : val === "TECHNICIAN" ? "var2"
           : "var5"
       return <Badge variant={variant} className="capitalize ml-2  hidden lg:block">{val}</Badge>
     },
@@ -68,7 +66,7 @@ export const columns: ColumnDef<IUser>[] = [
     },
     cell: ({ row }) => {
       const val = row.getValue("status") as string
-      const variant = val === "active" ? "var1"
+      const variant = val === "ACTIVE" ? "var1"
         : "var5"
       return <Badge variant={variant} className="hidden md:block capitalize ml-2">{val}</Badge>
     },

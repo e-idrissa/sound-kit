@@ -5,9 +5,10 @@ import { AdminCard } from '../_components/card'
 import { UserCard } from './_components/user-card'
 import { UsersTable } from '@/components/global/users-table/data-table'
 import { columns } from '@/components/global/users-table/columns'
-import { users } from '@/constants/data'
+import { getAllUsers } from '@/lib/actions/user.actions'
 
-const UsersPage = () => {
+const UsersPage = async () => {
+  const users = await getAllUsers()
   return (
     <div className=''>
       <div className="relative w-96">
@@ -22,7 +23,7 @@ const UsersPage = () => {
         </div>
         <div className="w-full flex flex-col lg:flex-row gap-8">
           <div className="flex-1">
-            <UsersTable columns={columns} data={users} />
+            <UsersTable columns={columns} data={users!} />
           </div>
           <div className="w-full lg:w-1/4">
             <UserCard />

@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   email     String   @unique
   password  String
   firstname String
@@ -25,7 +25,7 @@ model User {
 }
 
 model QRCode {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -33,7 +33,7 @@ model QRCode {
 }
 
 model Category {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -43,7 +43,7 @@ model Category {
 }
 
 model Brand {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -53,7 +53,7 @@ model Brand {
 }
 
 model Local {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -63,7 +63,7 @@ model Local {
 }
 
 model Rental {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -78,7 +78,7 @@ model Rental {
 }
 
 model RentalReason {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -87,7 +87,7 @@ model RentalReason {
 }
 
 model Instrument {
-  id         String  @id @unique @default(uuid())
+  id         String  @id @unique
   state      String
   isAffected Boolean
   situation  String
@@ -115,7 +115,7 @@ model Instrument {
 }
 
 model Request {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -131,7 +131,7 @@ model Request {
 }
 
 model RequestReason {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
@@ -140,7 +140,7 @@ model RequestReason {
 }
 
 model BorrowedInstrument {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   state     String
   inUse     Boolean
   quantity  Int
@@ -161,7 +161,7 @@ model BorrowedInstrument {
 }
 
 model Loan {
-  id        String   @id @unique @default(uuid())
+  id        String   @id @unique
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())

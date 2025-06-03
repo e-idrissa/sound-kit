@@ -21,7 +21,6 @@ export async function handleSignIn(values: SignInParams) {
 
   const token = jwt.sign({ userId: user.id, role: user.role }, SECRET, { expiresIn: '1h' })
 
-    // stocker le token dans un cookie sécurisé
     ; (await cookies()).set("token", token, {
       httpOnly: true,
       secure: true,
