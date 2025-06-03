@@ -1,7 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { UserForm } from "./user-form"
+import { UserForm } from "../../../../../components/global/user-form"
+import { redirect } from "next/navigation"
+import { getCurrentUser } from "@/lib/actions/user.actions"
 
-export const UserCard = () => {
+export const UserCard = async () => {
+  const jwt = await getCurrentUser() as IJWT
+  if (!jwt) return redirect('/sign-in')
+
+  const isAdmin = jwt.role === "ADMIN"
+
   return (
     <Card className="bg-background">
       <CardHeader>
@@ -11,7 +18,7 @@ export const UserCard = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <UserForm />
+        <UserForm type="create" isAdmin={isAdmin} />
       </CardContent>
     </Card>
   )

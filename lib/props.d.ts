@@ -95,6 +95,7 @@ type InstrumentFormProps = {
 
 type ProfileCardProps = {
   user: IUser
+  isProfile?: boolean
 }
 
 type UserFormProps = {

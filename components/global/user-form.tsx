@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
@@ -22,9 +21,12 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { UserFormProps } from "@/lib/props"
+import { useRouter } from "next/navigation"
+import { createUser, updateUser } from "@/lib/actions/user.actions"
 
 export function UserForm({ user, type, isAdmin }: UserFormProps) {
   const [success, setSuccess] = useState<boolean | undefined>(undefined)
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
@@ -32,20 +34,35 @@ export function UserForm({ user, type, isAdmin }: UserFormProps) {
       firstname: user?.firstname || "",
       lastname: user?.lastname || "",
       email: user?.email || "",
-      role: user?.role || "technician",
+      role: user?.role || "TECHNICIAN",
     },
   })
 
-  function onSubmit(data: z.infer<typeof userSchema>) {
-    toast("You submitted the following values", {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
-
-    setSuccess(true)
+  async function onSubmit(data: z.infer<typeof userSchema>) {
+    try {
+      if (type === "create") {
+        const result = await createUser(data)
+        if (result.success) {
+          setSuccess(true)
+          form.reset()
+          router.refresh()
+        } else {
+          setSuccess(false)
+        }
+      } else {
+        const result = await updateUser(data)
+        if (result.success) {
+          setSuccess(true)
+          form.reset()
+          router.refresh()
+        } else {
+          setSuccess(false)
+        }
+      }
+    } catch (error) {
+      console.error(error)
+      setSuccess(false)
+    }
   }
 
   const { isValid, isSubmitting } = form.formState

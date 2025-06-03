@@ -9,6 +9,7 @@ interface IUser {
   id: string,
   firstname: string,
   lastname: string,
+  name?: string
   role: string,
   email: string,
   status: string,
@@ -114,3 +115,17 @@ interface HandleErrorParams {
   error: unknown
   message: string
 }
+
+interface CreateUserParams {
+  firstname: string;
+  lastname: string;
+  email: string;
+  role: string;
+}
+
+interface sendAccountInfosEmailParams {
+  email: string;
+  firstname: string;
+  password: string;
+}
+
