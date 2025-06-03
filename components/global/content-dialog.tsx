@@ -1,0 +1,102 @@
+"use client"
+
+import { ContentDialogProps } from '@/lib/props'
+import React from 'react'
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel } from '../ui/alert-dialog'
+import { Info, QrCode } from 'lucide-react'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
+import { cn } from '@/lib/utils'
+import { Micro } from './instruments'
+
+const ContentDialog = ({ isRental, rental, instrument, isGhost, isAdmin, className }: ContentDialogProps) => {
+  const variant = rental?.status === "approved" ? "var1"
+    : rental?.status === "pending" ? "var2"
+      : rental?.status === "closed" ? "var4"
+        : "var5"
+  const stateVar = instrument?.state === "new" ? "var1"
+    : instrument?.state === "dated" ? "var2" : "var3"
+  const situationVar = instrument?.situation === "available" ? "var1" : "var2"
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild className={className}>
+        <Button variant={"ghost"} size={"sm"}>
+          <Info className={cn(isGhost ? "hidden" : 'size-4')} />
+          {!isAdmin && (
+            <span className={cn(isRental ? "block w-full md:w-fit" : "hidden md:block")}>Details</span>
+          )}
+        </Button>
+      </AlertDialogTrigger>
+      {isRental ? (
+        <AlertDialogContent className={cn(isRental ? "w-72" : "")}>
+          <AlertDialogHeader className='flex flex-row items-center'>
+            <Info className='size-8 text-blue-500 bg-blue-500/20 p-2 rounded-lg' />
+            <AlertDialogTitle className='w-fit'>Details</AlertDialogTitle>
+            <Badge variant={variant} className="capitalize ml-auto">{rental?.status}</Badge>
+          </AlertDialogHeader>
+          <AlertDialogDescription className='flex flex-col space-y-1 text-sm text-muted-foreground border-y border-input py-4'>
+            <span>
+              <span className="font-bold mr-2">Instrument Id:</span>
+              <span>{rental?.qrCodeId}</span>
+            </span>
+            <span>
+              <span className="font-bold mr-2">Technician:</span>
+              <span>{rental?.user}</span>
+            </span>
+            <span>
+              <span className="font-bold mr-2">From:</span>
+              <span>{rental?.startDate.toDateString()}</span>
+            </span>
+            <span>
+              <span className="font-bold mr-2">To:</span>
+              <span>{rental?.endDate.toDateString()}</span>
+            </span>
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel className='w-full'>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      ) : (
+        <AlertDialogContent className='w-110'>
+          <AlertDialogHeader className='flex flex-row items-center'>
+            <div className="rounded-md p-2 bg-blue-500/20">
+              <Micro />
+            </div>
+            <AlertDialogTitle className='w-fit'>Details</AlertDialogTitle>
+            <Badge variant={stateVar} className="capitalize ml-auto">{instrument?.state}</Badge>
+          </AlertDialogHeader>
+          <AlertDialogDescription className='flex items-center gap-8 border-y border-input py-4 text-sm '>
+            <div className="flex flex-col space-y-1 flex-1 text-muted-foreground">
+              <span>
+                <span className="font-bold mr-2">Instrument Id:</span>
+                <span>{instrument?.qrCodeId}</span>
+              </span>
+              <span>
+                <span className="font-bold mr-2">Category:</span>
+                <span>{instrument?.categoryId}</span>
+              </span>
+              <span>
+                <span className="font-bold mr-2">Brand:</span>
+                <span>{instrument?.brandId}</span>
+              </span>
+              <span>
+                <span className="font-bold mr-2">Technician:</span>
+                <span>{instrument?.userId}</span>
+              </span>
+              <Badge variant={situationVar} className="capitalize">{instrument?.situation}</Badge>
+            </div>
+            <div className="flex flex-col space-y-1 items-center">
+              <QrCode className='size-35 text-muted-foreground' />
+            </div>
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel className='w-full'>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      )}
+    </AlertDialog>
+  )
+}
+
+export default ContentDialog
