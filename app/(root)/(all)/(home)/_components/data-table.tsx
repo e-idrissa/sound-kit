@@ -23,7 +23,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { Search } from "lucide-react"
+import { Info, Search } from "lucide-react"
 import Link from "next/link"
 
 interface DataTableProps<TData, TValue> {
@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="bg-background mt-8 w-full p-8 border-input border rounded-lg space-y-4">
-      
+
       <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center lg:justify-between w-full">
         <div className="flex items-center gap-4">
           <Button size={"sm"} variant={"outline"} asChild>
@@ -107,7 +107,7 @@ export function DataTable<TData, TValue>({
                   className="h-12"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="nth-1:w-0 nth-2:w-0 md:nth-2:w-20">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -116,7 +116,11 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  <div className="flex flex-col items-center justify-center w-full gap-2 p-4">
+                    <Info className="size-8 text-muted-foreground" />
+                    <p className="text-muted-foreground">No results.</p>
+                    <p className="text-muted-foreground -mt-2">Add data to view them here.</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

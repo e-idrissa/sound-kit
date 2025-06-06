@@ -1,10 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { UserForm } from "../../../../../components/global/user-form"
+import { UserForm } from "@/components/global/user-form"
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/lib/actions/user.actions"
+import { getAuthToken } from "@/lib/actions/auth.actions"
 
 export const UserCard = async () => {
-  const jwt = await getCurrentUser() as IJWT
+  const jwt = await getAuthToken() as IJWT
   if (!jwt) return redirect('/sign-in')
 
   const isAdmin = jwt.role === "ADMIN"

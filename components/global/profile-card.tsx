@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Pen, Shield, User2 } from 'lucide-react'
 import React from 'react'
-import { ProfileCardProps } from '@/lib/props'
+import { ProfileCardProps } from '@/lib/types/props'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -9,8 +9,11 @@ import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { UserForm } from './user-form'
+import Link from 'next/link'
 
 export const Profile = ({ user, isProfile }: ProfileCardProps) => {
+  const isAdmin = user.role === "ADMIN"
+  
   return (
     <Card className='w-full bg-background'>
       <CardContent className='flex flex-col lg:flex-row items-center gap-4 h-full'>
@@ -27,7 +30,7 @@ export const Profile = ({ user, isProfile }: ProfileCardProps) => {
                 <DialogHeader>
                   <DialogTitle>Edit User&apos;s Informations</DialogTitle>
                 </DialogHeader>
-                <UserForm user={user} type="edit" />
+                <UserForm user={user} type="edit" isAdmin={isAdmin} />
               </DialogContent>
             </Dialog>
           </div>
@@ -53,7 +56,9 @@ export const Profile = ({ user, isProfile }: ProfileCardProps) => {
                 <Input type="password" placeholder="••••••••" disabled />
               </div>
               <p className="text-xs text-muted-foreground">You can change the account password here. Notice that once changed, the action can not be undone.</p>
-              <Button disabled={isProfile}>Change password</Button>
+              <Button disabled={isProfile} asChild>
+                <Link href="/set-password">Change password</Link>
+              </Button>
             </div>
           </div>
         </div>

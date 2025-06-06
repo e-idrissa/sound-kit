@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import z from "zod"
-import { AuthFormProps, PasswordFieldProps } from '@/lib/types/props'
+import { PasswordFieldProps } from '@/lib/types/props'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 
@@ -13,16 +13,15 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { redirect } from 'next/navigation';
-import { signInSchema } from '@/lib/schemas/auth.schema';
+import { setPasswordSchema } from '@/lib/schemas/auth.schema';
 import { toast } from 'sonner';
 import { Eye, EyeClosed, Loader2 } from 'lucide-react';
-import Link from 'next/link';
 import { PasswordStrength } from './password-strength';
-import { handleSignIn } from '@/lib/actions/auth.actions';
+import { handleSetPassword } from '@/lib/actions/auth.actions';
+import { PasswordFormProps } from '@/lib/types/props';
 
 const PasswordInput = ({ field }: PasswordFieldProps) => {
   const [showPassword, setShowPassword] = useState(false)
@@ -61,23 +60,26 @@ const PasswordInput = ({ field }: PasswordFieldProps) => {
   )
 }
 
-const SignInForm = () => {
-
-  const form = useForm<z.infer<typeof signInSchema>>({
-    resolver: zodResolver(signInSchema),
+export const PasswordForm = ({ userId }: PasswordFormProps) => {
+  const form = useForm<z.infer<typeof setPasswordSchema>>({
+    resolver: zodResolver(setPasswordSchema),
     defaultValues: {
-      email: "",
       password: "",
+      confirmedPassword: "",
     },
   })
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof signInSchema>) {
-    const result = await handleSignIn(values)
+  async function onSubmit(values: z.infer<typeof setPasswordSchema>) {
+    if(values.password !== values.confirmedPassword) {
+      toast.error("Passwords do not match")
+      return
+    }
+    const result = await handleSetPassword({ userId, ...values })
 
     if(result.success) {
-      toast.success("Welcome to SoundKit")
-      redirect("/")
+      toast.success("Password set successfully")
+      redirect("/profile")
     } else {
       toast.error("Error. Try again")
     }
@@ -88,19 +90,6 @@ const SignInForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name={"email"}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className='capitalize'>{"Email"}</FormLabel>
-              <FormControl>
-                <Input placeholder={"user@gmaill.com"} type={"email"} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name={"password"}
@@ -114,9 +103,19 @@ const SignInForm = () => {
             </FormItem>
           )}
         />
-        <div className="w-full flex justify-end">
-          <Link href={"/forgot-password"} className='text-blue-500 italic text-sm -mt-2 mb-1 hover:underline'>Forget password?</Link>
-        </div>
+        <FormField
+          control={form.control}
+          name={"confirmedPassword"}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className='capitalize'>{"Confirm Password"}</FormLabel>
+              <FormControl>
+                <PasswordInput field={field}/>
+              </FormControl>
+              <PasswordStrength password={field.value} />
+            </FormItem>
+          )}
+        />
         <Button type="submit" size="sm" className='w-full' onChangeCapture={form.handleSubmit(onSubmit)} disabled={!isValid || isSubmitting}>
           {isSubmitting ? (
             <span className="flex items-center">
@@ -125,7 +124,7 @@ const SignInForm = () => {
             </span>
           ) : (
             <span className="flex items-center">
-              <span>Sign In</span>
+              <span>Set Password</span>
             </span>
           )}
         </Button>
@@ -134,7 +133,3 @@ const SignInForm = () => {
   )
 }
 
-export const AuthForm = ({ type }: AuthFormProps) => {
-  if (type === "sign-in") return <SignInForm />
-  else return null
-}

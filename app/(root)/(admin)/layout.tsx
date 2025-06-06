@@ -1,13 +1,12 @@
-import { users } from '@/constants/data'
 import { redirect } from 'next/navigation'
-import React from 'react'
+import { getAuthToken } from '@/lib/actions/auth.actions'
 
-const AdminLayout = ({ children }: { children: React.ReactNode}) => {
-  const user = users[0]
+const AdminLayout = async ({ children }: { children: React.ReactNode}) => {
+  const jwt = await getAuthToken() as IJWT
 
-  if(!user) redirect("/sign-in")
+  if(!jwt) redirect("/sign-in")
 
-  if(user.role !== "admin") redirect("/")
+  if(jwt.role !== "ADMIN") redirect("/")
   
   return (
     <div>{children}</div>

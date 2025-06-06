@@ -1,6 +1,6 @@
 "use client";
 
-import { ListActionsProps } from '@/lib/props'
+import { ListActionsProps } from '@/lib/types/props'
 import React from 'react'
 import { Button } from '../ui/button'
 import { Check, X } from 'lucide-react'

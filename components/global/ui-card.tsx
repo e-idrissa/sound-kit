@@ -1,4 +1,4 @@
-import { UICardProps } from '@/lib/props'
+import { UICardProps } from '@/lib/types/props'
 import React from 'react'
 import { Card, CardContent, CardTitle } from '../ui/card'
 import { cn } from '@/lib/utils'

@@ -109,7 +109,7 @@ export function UsersTable<TData, TValue>({
                   <div className="flex flex-col items-center justify-center w-full gap-2 p-4">
                     <Info className="size-8 text-muted-foreground" />
                     <p className="text-muted-foreground">No results.</p>
-                    <p className="text-muted-foreground -mt-2">Add users to view them here.</p>
+                    <p className="text-muted-foreground -mt-2">Add data to view them here.</p>
                   </div>
                 </TableCell>
               </TableRow>

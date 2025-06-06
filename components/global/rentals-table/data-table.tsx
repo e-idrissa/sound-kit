@@ -23,7 +23,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { Search } from "lucide-react"
+import { Info, Search } from "lucide-react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -106,7 +106,11 @@ export function RentalsTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  <div className="flex flex-col items-center justify-center w-full gap-2 p-4">
+                    <Info className="size-8 text-muted-foreground" />
+                    <p className="text-muted-foreground">No results.</p>
+                    <p className="text-muted-foreground -mt-2">Add data to view them here.</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

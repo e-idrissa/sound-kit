@@ -36,11 +36,11 @@ async function main() {
     prisma.brand.create({ data: { id: uuid(), name: 'Shure' } }),
   ])
 
-  // Locals
-  const locals = await Promise.all([
-    prisma.local.create({ data: { id: uuid(), name: 'Local 1' } }),
-    prisma.local.create({ data: { id: uuid(), name: 'Local 2' } }),
-    prisma.local.create({ data: { id: uuid(), name: 'Local 3' } }),
+  // Warehouses
+  const warehouses = await Promise.all([
+    prisma.warehouse.create({ data: { id: uuid(), name: 'Warehouse 1' } }),
+    prisma.warehouse.create({ data: { id: uuid(), name: 'Warehouse 2' } }),
+    prisma.warehouse.create({ data: { id: uuid(), name: 'Warehouse 3' } }),
   ])
 
   // Request Reasons
@@ -62,11 +62,11 @@ async function main() {
     ✅ Seed data inserted successfully!
     ------------------------------------
     👩🏻‍💻 Admin: ${admin.email}
-    Categories: ${categories.length}
-    Brands: ${brands.length}
-    Locals: ${locals.length}
-    Request Reasons: ${requestReasons.length}
-    Rental Reasons: ${rentalReasons.length}
+    🎸 Categories: ${categories.length}
+    🎨 Brands: ${brands.length}
+    🏠 Warehouses: ${warehouses.length}
+    📝 Request Reasons: ${requestReasons.length}
+    📅 Rental Reasons: ${rentalReasons.length}
   `)
 }
 
