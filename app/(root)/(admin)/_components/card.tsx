@@ -1,4 +1,4 @@
-import { AdminCardProps } from '@/lib/props'
+import { AdminCardProps } from '@/lib/types/props'
 import React from 'react'
 
 export const AdminCard = ({ label, count}: AdminCardProps) => {

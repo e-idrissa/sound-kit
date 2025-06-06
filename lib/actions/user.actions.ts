@@ -1,27 +1,10 @@
 "use server";
 
-import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
 import { prisma } from '../database/prisma';
 import { handleError } from '../utils';
 import { v4 as uuid } from 'uuid'
 import { sendAccountInfosEmail } from '../email'
-
-const SECRET = process.env.JWT_SECRET!
-
-export async function getCurrentUser() {
-  const cookieStore = await cookies()
-  const token = cookieStore.get('token')?.value
-
-  if (!token) return null
-
-  try {
-    const decoded = jwt.verify(token, SECRET)
-    return decoded
-  } catch (error) {
-    handleError({ error, message: "Error getting connection informations" })
-  }
-}
+import bcrypt from 'bcrypt'
 
 export async function getUserById(id: string) {
   const userId = id
@@ -56,7 +39,8 @@ export async function getUserById(id: string) {
 export async function createUser(data: CreateUserParams) {
   const { firstname, lastname, email, role } = data
   const status = "INACTIVE"
-  const tempPassword = '1234@Default';
+  const tempPwd = '1234@Default';
+  const hashedPassword = await bcrypt.hash(tempPwd, 10)
 
   try {
     const user = await prisma.user.create({
@@ -67,11 +51,11 @@ export async function createUser(data: CreateUserParams) {
         email,
         role,
         status,
-        password: tempPassword,
+        password: hashedPassword,
         },
     })
 
-    await sendAccountInfosEmail(email, firstname, tempPassword)
+    await sendAccountInfosEmail(email, firstname, tempPwd)
 
     return {user: user!, success: true}
   } catch (error) {

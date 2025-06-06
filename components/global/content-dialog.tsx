@@ -1,15 +1,16 @@
 "use client"
 
-import { ContentDialogProps } from '@/lib/props'
+import { ContentDialogProps } from '@/lib/types/props'
 import React from 'react'
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel } from '../ui/alert-dialog'
-import { Info, QrCode } from 'lucide-react'
+import { Info } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { cn } from '@/lib/utils'
 import { Micro } from './instruments'
+import Image from 'next/image'
 
-const ContentDialog = ({ isRental, rental, instrument, isGhost, isAdmin, className }: ContentDialogProps) => {
+const ContentDialog = ({ isRental, rental, instrument, user, isGhost, isAdmin, className }: ContentDialogProps) => {
   const variant = rental?.status === "approved" ? "var1"
     : rental?.status === "pending" ? "var2"
       : rental?.status === "closed" ? "var4"
@@ -17,6 +18,9 @@ const ContentDialog = ({ isRental, rental, instrument, isGhost, isAdmin, classNa
   const stateVar = instrument?.state === "new" ? "var1"
     : instrument?.state === "dated" ? "var2" : "var3"
   const situationVar = instrument?.situation === "available" ? "var1" : "var2"
+
+  if (!instrument) return null
+  const qrCodeImg = instrument?.qrCodeImg || ""
 
   return (
     <AlertDialog>
@@ -42,7 +46,7 @@ const ContentDialog = ({ isRental, rental, instrument, isGhost, isAdmin, classNa
             </span>
             <span>
               <span className="font-bold mr-2">Technician:</span>
-              <span>{rental?.user}</span>
+              <span>{user}</span>
             </span>
             <span>
               <span className="font-bold mr-2">From:</span>
@@ -67,28 +71,28 @@ const ContentDialog = ({ isRental, rental, instrument, isGhost, isAdmin, classNa
             <Badge variant={stateVar} className="capitalize ml-auto">{instrument?.state}</Badge>
           </AlertDialogHeader>
           <AlertDialogDescription className='flex items-center gap-8 border-y border-input py-4 text-sm '>
-            <div className="flex flex-col space-y-1 flex-1 text-muted-foreground">
+            <span className="flex flex-col space-y-1 flex-1 text-muted-foreground">
               <span>
                 <span className="font-bold mr-2">Instrument Id:</span>
-                <span>{instrument?.qrCodeId}</span>
+                <span>********</span>
               </span>
               <span>
                 <span className="font-bold mr-2">Category:</span>
-                <span>{instrument?.categoryId}</span>
+                <span>{instrument?.category}</span>
               </span>
               <span>
                 <span className="font-bold mr-2">Brand:</span>
-                <span>{instrument?.brandId}</span>
+                <span>{instrument?.brand}</span>
               </span>
               <span>
                 <span className="font-bold mr-2">Technician:</span>
-                <span>{instrument?.userId}</span>
+                <span>{user}</span>
               </span>
-              <Badge variant={situationVar} className="capitalize">{instrument?.situation}</Badge>
-            </div>
-            <div className="flex flex-col space-y-1 items-center">
-              <QrCode className='size-35 text-muted-foreground' />
-            </div>
+              <Badge variant={situationVar} className="capitalize mt-4">{instrument?.situation}</Badge>
+            </span>
+            <span className="flex flex-col space-y-1 items-center size-36">
+              <Image src={qrCodeImg} alt="qrCode" width={60} height={60} className="rounded-lg w-full h-full" />
+            </span>
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogCancel className='w-full'>Close</AlertDialogCancel>

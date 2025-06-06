@@ -1,4 +1,4 @@
-import { PageTitleProps } from '@/lib/props'
+import { PageTitleProps } from '@/lib/types/props'
 import { Home } from 'lucide-react'
 import React from 'react'
 

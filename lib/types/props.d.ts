@@ -55,14 +55,6 @@ type UICardProps = {
   className?: string
 }
 
-type ComboBoxProps = {
-  items: {
-    value: string,
-    label: string
-  }[]
-  disabled?: boolean
-}
-
 type CategoryBadgeProps = {
   label: string
   count: number
@@ -72,6 +64,7 @@ type ContentDialogProps = {
   isRental: boolean
   rental?: IRental
   instrument?: IInstrument
+  user?: string
   isGhost?: boolean
   isAdmin?: boolean
   className?: string
@@ -89,7 +82,7 @@ type InstrumentDialogProps = {
 
 type InstrumentFormProps = {
   onSuccess: () => void
-  instrument?: IInstrument
+  instrument?: IInstrumentForm
   type?: "create" | "edit"
 }
 
@@ -104,3 +97,16 @@ type UserFormProps = {
   isAdmin?: boolean
 }
 
+type MessageProps = {
+  success: boolean | undefined
+}
+
+type ResetPasswordProps = {
+  searchParams?: {
+    token?: string
+  }
+}
+
+type PasswordFormProps = {
+  userId: string
+}

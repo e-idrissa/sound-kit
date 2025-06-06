@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react'
+import React, { useState } from 'react'
 import z from "zod"
 import { useForm} from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -18,9 +18,12 @@ import { Input } from "@/components/ui/input"
 import { forgotPasswordSchema } from '@/lib/schemas/auth.schema';
 import { Loader2 } from 'lucide-react';
 import { handleForgotPassword } from '@/lib/actions/auth.actions';
-import { toast } from 'sonner';
+import { useCooldown } from '@/hooks/use-cooldown';
+import { Message } from '@/components/global/message';
 
 export const ForgotPasswordForm = () => {
+  const [success, setSuccess] = useState<boolean | undefined>(undefined)
+  const {cooldown, setCooldown} = useCooldown()
 
   const form = useForm<z.infer<typeof forgotPasswordSchema>>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -34,18 +37,18 @@ export const ForgotPasswordForm = () => {
     const result = await handleForgotPassword(values)
 
     if(result.success) {
-      toast.success("Welcome to MediaKit")
+      setSuccess(true)
+      setCooldown(120)
     } else {
-      toast.error("Error. Try again")
+      setSuccess(false)
     }
   }
 
-    const { isValid, isSubmitting } = form.formState
-
-  // TODO: add a checkInbox dialog and remove the temporary isSuccess state
+  const { isValid, isSubmitting } = form.formState
 
   return (
     <Form {...form}>
+      <Message success={success}/>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
@@ -60,15 +63,19 @@ export const ForgotPasswordForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" size="sm" className='w-full' onChangeCapture={form.handleSubmit(onSubmit)} disabled={!isValid || isSubmitting}>
+        <Button type="submit" size="sm" className='w-full' onChangeCapture={form.handleSubmit(onSubmit)} disabled={!isValid || isSubmitting || cooldown > 0}>
           {isSubmitting ? (
             <span className="flex items-center">
-              <Loader2 className='size-4 mr-2' />
-              <i>Submitting...</i>
+              <Loader2 className='size-4 mr-2 animate-spin' />
+              <i>Sending...</i>
+            </span>
+          ) : cooldown > 0 ? (
+            <span className="flex items-center">
+              <i>Resend in {cooldown} seconds</i>
             </span>
           ) : (
             <span className="flex items-center">
-              <span>Sign Up</span>
+              <span>Send</span>
             </span>
           )}
         </Button>

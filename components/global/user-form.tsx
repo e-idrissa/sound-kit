@@ -15,17 +15,19 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { userSchema } from "@/lib/schemas/user.schema"
-import { CircleAlert, CircleCheck, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useState } from "react"
-import { cn } from "@/lib/utils"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { UserFormProps } from "@/lib/props"
+import { UserFormProps } from "@/lib/types/props"
 import { useRouter } from "next/navigation"
 import { createUser, updateUser } from "@/lib/actions/user.actions"
+import { Message } from "./message"
+import { useCooldown } from "@/hooks/use-cooldown"
 
 export function UserForm({ user, type, isAdmin }: UserFormProps) {
   const [success, setSuccess] = useState<boolean | undefined>(undefined)
+  const { setCooldown } = useCooldown()
   const router = useRouter()
 
   const form = useForm<z.infer<typeof userSchema>>({
@@ -43,6 +45,7 @@ export function UserForm({ user, type, isAdmin }: UserFormProps) {
       if (type === "create") {
         const result = await createUser(data)
         if (result.success) {
+          setCooldown(10)
           setSuccess(true)
           form.reset()
           router.refresh()
@@ -67,32 +70,9 @@ export function UserForm({ user, type, isAdmin }: UserFormProps) {
 
   const { isValid, isSubmitting } = form.formState
 
-  const Message = () => {
-    return (
-      <>
-        {success !== undefined && (
-          <div className={cn("p-3 text-sm rounded-md flex items-center gap-4", success === true ? "text-green-500 bg-green-500/20 border border-green-500/60" : "text-red-500 bg-red-500/20 border border-red-500/60")}>
-            {success === true && (
-              <>
-                <CircleCheck className="size-4" />
-                <span className="text-sm">User {type === "create" ? "created" : "updated"} successfully</span>
-              </>
-            )}
-            {success === false && (
-              <>
-                <CircleAlert className="size-4" />
-                <span className="text-sm">Failed to {type === "create" ? "create" : "update"} user</span>
-              </>
-            )}
-          </div>
-        )}
-      </>
-    )
-  }
-
   return (
     <div className="w-full space-y-6">
-      <Message />
+      <Message success={success} />
       <Card className="bg-background">
         <CardContent>
           <Form {...form}>
@@ -151,7 +131,7 @@ export function UserForm({ user, type, isAdmin }: UserFormProps) {
                       >
                         <FormItem className="flex items-center gap-3">
                           <FormControl>
-                            <RadioGroupItem value="admin" />
+                            <RadioGroupItem value="ADMIN" />
                           </FormControl>
                           <FormLabel className="font-normal">
                             Admin
@@ -159,7 +139,7 @@ export function UserForm({ user, type, isAdmin }: UserFormProps) {
                         </FormItem>
                         <FormItem className="flex items-center gap-3">
                           <FormControl>
-                            <RadioGroupItem value="technician" />
+                            <RadioGroupItem value="TECHNICIAN" />
                           </FormControl>
                           <FormLabel className="font-normal">
                             Technician
@@ -174,7 +154,7 @@ export function UserForm({ user, type, isAdmin }: UserFormProps) {
               <Button type="submit" size="sm" className='w-full' onChangeCapture={form.handleSubmit(onSubmit)} disabled={!isValid || isSubmitting}>
                 {isSubmitting ? (
                   <span className="flex items-center">
-                    <Loader2 className='size-4 mr-2' />
+                    <Loader2 className='size-4 mr-2 animate-spin' />
                     <i>{type === "create" ? "Creating" : "Updating"}...</i>
                   </span>
                 ) : (

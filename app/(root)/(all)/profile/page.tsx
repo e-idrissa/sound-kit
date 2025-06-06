@@ -2,10 +2,11 @@ import { PageTitle } from '@/components/global/page-title'
 import { Profile } from '@/components/global/profile-card'
 import { User2 } from 'lucide-react'
 
-import { getCurrentUser, getUserById } from '@/lib/actions/user.actions'
+import { getUserById } from '@/lib/actions/user.actions'
+import { getAuthToken } from '@/lib/actions/auth.actions'
 
 const ProfilePage = async () => {
-  const jwt = await getCurrentUser() as IJWT
+  const jwt = await getAuthToken() as IJWT
 
   const user = await getUserById(jwt.userId)
 

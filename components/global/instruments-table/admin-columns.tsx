@@ -14,14 +14,37 @@ import {
 import { Badge } from "@/components/ui/badge"
 import ContentDialog from "@/components/global/content-dialog"
 import { InstrumentDialog } from "../instrument-dialog"
+import Image from "next/image"
 
 export const adminColumns: ColumnDef<IInstrument>[] = [
   {
     accessorKey: "qrCodeId",
-    header: "Id",
+    header: ({ column }) => {
+      const val = column.getFilterValue() as string
+      return (
+        <p className="hidden">{val}</p>
+      )
+    },
+    cell: ({ row }) => {
+      const val = row.getValue("qrCodeId") as string
+      return <p className="capitalize ml-3 hidden">{val}</p>
+    },
   },
   {
-    accessorKey: "categoryId",
+    accessorKey: "qrCodeImg",
+    header: ({ column }) => {
+      const val = column.getFilterValue() as string
+      return (
+        <p className="hidden">{val}</p>
+      )
+    },
+    cell: ({ row }) => {
+      const val = row.getValue("qrCodeImg") as string
+      return <Image src={val} alt="qrCode" width={60} height={60} className="hidden md:block rounded border border-blue-400"/>
+    },
+  },
+  {
+    accessorKey: "category",
     header: ({ column }) => {
       return (
         <Button
@@ -34,12 +57,12 @@ export const adminColumns: ColumnDef<IInstrument>[] = [
       )
     },
     cell: ({ row }) => {
-      const val = row.getValue("categoryId") as string
+      const val = row.getValue("category") as string
       return <p className="capitalize ml-3">{val}</p>
     },
   },
   {
-    accessorKey: "brandId",
+    accessorKey: "brand",
     header: ({ column }) => {
       return (
         <Button
@@ -53,12 +76,12 @@ export const adminColumns: ColumnDef<IInstrument>[] = [
       )
     },
     cell: ({ row }) => {
-      const val = row.getValue("brandId") as string
+      const val = row.getValue("brand") as string
       return <p className="capitalize ml-3 hidden xl:block">{val}</p>
     },
   },
   {
-    accessorKey: "local",
+    accessorKey: "warehouse",
     header: ({ column }) => {
       return (
         <Button
@@ -66,13 +89,13 @@ export const adminColumns: ColumnDef<IInstrument>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="hidden xl:flex items-center gap-1"
         >
-          Local
+          Warehouse
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
     cell: ({ row }) => {
-      const val = row.getValue("local") as string
+      const val = row.getValue("warehouse") as string
       return <p className="capitalize ml-3 hidden xl:block">{val}</p>
     },
   },
@@ -134,7 +157,7 @@ export const adminColumns: ColumnDef<IInstrument>[] = [
 
       return (
         <div className="flex items-center w-20">
-          <ContentDialog isRental={false} instrument={row.original} isAdmin={true} className="hidden sm:block" />
+          <ContentDialog isRental={false} instrument={row.original} isAdmin={true} className="hidden sm:block"  user={instrument.user || undefined}/>
           <InstrumentDialog type={"edit"} instrument={row.original} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

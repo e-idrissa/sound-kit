@@ -1,7 +1,9 @@
 import z from "zod";
 
 export const newInstrumentSchema = z.object({
-  
+  quantity: z.number().min(1, {
+    message: "Missing quantity"
+  }),
   categoryId: z.string().min(2, {
     message: "Missing category"
   }),
@@ -10,9 +12,8 @@ export const newInstrumentSchema = z.object({
   }),
   state: z.enum(["new", "dated", "damaged"]),
   situation: z.enum(["available", "rented"]),
-  local: z.enum(["local-1", "local-2", "local-3"]),
-  qrCodeId: z.string().min(2, {
-    message: "Missing QR Code"
+  warehouseId: z.string().min(2, {
+    message: "Missing warehouse"
   }),
 })
 
@@ -30,7 +31,13 @@ export const editInstrumentSchema = z.object({
   brandId: z.string().min(2, {
     message: "Missing brand"
   }),
-  state: z.enum(["new", "dated", "damaged"]),
-  local: z.enum(["local-1", "local-2", "local-3"]),
-  situation: z.enum(["available", "rented"]),
+  state: z.string().min(2, {
+    message: "Missing state"
+  }),
+  warehouseId: z.string().min(2, {
+    message: "Missing warehouse"
+  }),
+  situation: z.string().min(2, {
+    message: "Missing situation"
+  }),
 })

@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Pen, PlusCircle } from 'lucide-react'
 import React, { useState } from 'react'
 import { InstrumentForm } from './instrument-form'
-import { InstrumentDialogProps } from '@/lib/props'
+import { InstrumentDialogProps } from '@/lib/types/props'
 
 export const InstrumentDialog = ({ instrument, type = "create" }: InstrumentDialogProps) => {
   const isCreate = type === "create"

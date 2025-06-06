@@ -19,7 +19,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { adminLinks, defaultLinks } from "@/constants/sidebar"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { SidebarFooterProps, SideBarHeaderProps, SidebarMenuProps } from "@/lib/props"
+import { SidebarFooterProps, SideBarHeaderProps, SidebarMenuProps } from "@/lib/types/props"
 import { usePathname } from "next/navigation"
 import { logout } from "@/lib/actions/auth.actions"
 
@@ -30,7 +30,7 @@ const Header = ({ state, isMobile }: SideBarHeaderProps) => {
         <SidebarMenuItem className={cn(state === "collapsed" && !isMobile ? "bg-blue-700 p-0 flex items-center justify-center h-8 rounded" : "bg-accent py-1 px-2 rounded-md", "")}>
           <Link href={"/"} className="flex items-center">
             <Clapperboard className={cn(state === "collapsed" && !isMobile ? "size-4" : "size-10 p-2 rounded-md bg-blue-700", "text-white")} />
-            {state === "expanded" || isMobile? (
+            {state === "expanded" || isMobile ? (
               <div className="flex flex-col ml-2">
                 <h3 className="font-medium text-lg">SoundKit</h3>
                 <span className="text-sm text-muted-foreground capitalize">eglise arche</span>
@@ -47,14 +47,14 @@ const Footer = ({ user, state, isMobile }: SidebarFooterProps) => {
   const handleLogout = async () => {
     await logout()
   }
-  
+
   return (
     <SidebarFooter className="mb-[0px]">
       <SidebarMenu>
         <SidebarMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className={cn(state === "expanded" || isMobile ? "h-12 gap-2" : "bg-blue-700 text-white hover:bg-blue-700/80 justify-center p-2 rounded", "flex items-center text-sm")}>
+              <div className={cn(state === "expanded" || isMobile ? "h-12 gap-2" : "bg-blue-700 text-white hover:bg-blue-700/80 justify-center p-2 rounded", "flex items-center text-sm cursor-pointer")}>
                 <User2 className={cn(state === "expanded" || isMobile ? "size-8 p-2 bg-blue-700 rounded text-white" : "size-4")} />
                 <div className={cn(state === "expanded" || isMobile ? "flex items-center justify-between flex-1" : "hidden")}>
                   <div className={("flex flex-col")}>

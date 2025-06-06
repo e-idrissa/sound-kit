@@ -1,4 +1,4 @@
-import { PasswordStrengthProps } from "@/lib/props";
+import { PasswordStrengthProps } from "@/lib/types/props";
 import { useEffect, useState } from "react";
 
 export function PasswordStrength({ password }: PasswordStrengthProps) {

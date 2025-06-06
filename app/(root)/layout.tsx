@@ -4,14 +4,15 @@ import { AppSidebar } from './_components/app-sidebar'
 import { cookies } from 'next/headers'
 import { Notifications } from '@/components/global/notifications'
 import { ModeToggle } from '@/components/global/mode-toggle'
-import { getCurrentUser, getUserById } from '@/lib/actions/user.actions'
+import { getUserById } from '@/lib/actions/user.actions'
 import { redirect } from 'next/navigation'
+import { getAuthToken } from '@/lib/actions/auth.actions'
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const cookieStore = await cookies()
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
 
-  const jwt = await getCurrentUser() as IJWT
+  const jwt = await getAuthToken() as IJWT
 
   if (!jwt) {
     return redirect("/sign-in")
