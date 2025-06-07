@@ -77,6 +77,8 @@ model Warehouse {
 model Rental {
   id        String   @id @unique
   status    String
+  startDate DateTime
+  endDate   DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -121,7 +123,7 @@ model Instrument {
   warehouse   Warehouse  @relation(fields: [warehouseId], references: [id])
 
   rentalId String?
-  rental   Rental? @relation(fields: [rentalId], references: [id])
+  rental   Rental? @relation(fields: [rentalId], references: [id], onDelete: SetNull)
 
   requests Request[]
 }

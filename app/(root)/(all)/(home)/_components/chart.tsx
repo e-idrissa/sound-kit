@@ -18,10 +18,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { chartData } from "@/constants/data"
 import { Button } from "@/components/ui/button"
-
-const data = chartData
+import { ChartDataProps } from "@/lib/types/props"
 
 const chartConfig = {
   instruments: {
@@ -36,7 +34,7 @@ const chartConfig = {
     color: "#60a5fa",
   },
   drums: {
-    label: "Drums",
+    label: "Micro",
     color: "#3b82f6",
   },
   piano: {
@@ -49,10 +47,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export const InstrumentsChart = () => {
+export const InstrumentsChart = ({ chartData }: ChartDataProps) => {
   const totalVisitors = React.useMemo(() => {
-    return data.reduce((acc, curr) => acc + curr.count, 0)
-  }, [])
+    return chartData.reduce((acc: number, curr: { count: number }) => acc + curr.count, 0)
+  }, [chartData])
+
+  console.log("chartData", chartData)
 
   return (
     <Card className="flex flex-col bg-background p-0">
@@ -82,7 +82,7 @@ export const InstrumentsChart = () => {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={data}
+              data={chartData}
               dataKey="count"
               nameKey="category"
               innerRadius={60}

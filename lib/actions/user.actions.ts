@@ -107,8 +107,24 @@ export async function getAllUsers() {
         instruments: user.instruments || [],
       }
     })
-    return formattedUsers
+
+    const selectUsers = users.map((user) => {
+      return {
+        id: user.id,
+        name: `${user.firstname} ${user.lastname}`,
+      }
+    })
+    return {
+      formattedUsers,
+      selectUsers,
+      success: true
+    }
   } catch (error) {
     handleError({ error, message: "Error fetching users" })
+    return {
+      formattedUsers: null,
+      selectUsers: null,
+      success: false
+    }
   }
 }

@@ -26,11 +26,6 @@ export const adminLinks = [
     icon: GalleryVerticalEnd,
   },
   {
-    title: "Loans",
-    url: "/loans",
-    icon: Package,
-  },
-  {
     title: "Manage Rentals",
     url: "/rentals",
     icon: Package2,
@@ -39,6 +34,11 @@ export const adminLinks = [
     title: "Magnage Users",
     url: "/users",
     icon: Users2,
+  },
+  {
+    title: "Loans",
+    url: "/loans",
+    icon: Package,
   },
   {
     title: "System Settings",

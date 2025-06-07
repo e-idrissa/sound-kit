@@ -42,12 +42,11 @@ interface createHashTokenParams {
 }
 
 interface createInstrumentParams {
-  qrCodeId: string
   categoryId: string
   brandId: string
   warehouseId: string
   state: string
-  quantity: number
+  quantity: string
 }
 
 interface editInstrumentParams {
@@ -61,3 +60,18 @@ interface editInstrumentParams {
   situation: string
 }
 
+type groupInstrumentsByCategoryIdParams = {
+  instruments: {
+    id: string,
+    categoryId: string
+    category: string | null
+  }[]
+}
+
+type createRentalParams = {
+  userId: string
+  instrumentIds: string[]
+  rentalReasonId: string
+  startDate: Date
+  endDate: Date
+}

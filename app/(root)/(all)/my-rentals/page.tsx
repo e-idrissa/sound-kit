@@ -4,10 +4,16 @@ import { ScrollText } from 'lucide-react'
 import React from 'react'
 import { RentalsTable } from '@/components/global/rentals-table/data-table'
 import { columns } from '@/components/global/rentals-table/columns'
-import { rentals } from '@/constants/data'
 import { RentalCard } from './_components/rental-card'
+import { getAuthToken } from '@/lib/actions/auth.actions'
+import { getRentalsByUserId } from '@/lib/actions/rental.actions'
 
-const MyRentalsPage = () => {
+const MyRentalsPage = async () => {
+  const token = await getAuthToken() as IJWT
+  const userId = token?.userId
+
+  const { rentals, activeRentalsCount, closedRentalsCount, pendingRentalsCount, totalRentals } = await getRentalsByUserId(userId)
+
   return (
     <div className=''>
       <div className="relative w-96">
@@ -19,12 +25,12 @@ const MyRentalsPage = () => {
             <div className="flex items-center gap-8">
               <UICard
                 label={'Total'}
-                amount={123}
+                amount={totalRentals || 0}
                 icon={ScrollText}
               />
               <UICard
                 label={'Active'}
-                amount={13}
+                amount={activeRentalsCount || 0}
                 icon={ScrollText}
                 isActive={true}
               />
@@ -32,13 +38,13 @@ const MyRentalsPage = () => {
             <div className="flex items-center gap-8">
               <UICard
                 label={'Closed'}
-                amount={23}
+                amount={closedRentalsCount || 0}
                 icon={ScrollText}
                 variant='closed'
               />
               <UICard
                 label={'Pending'}
-                amount={3}
+                amount={pendingRentalsCount || 0}
                 icon={ScrollText}
                 variant='pending'
               />
@@ -47,7 +53,7 @@ const MyRentalsPage = () => {
         </div>
         <div className="w-full flex flex-col lg:flex-row gap-8">
           <div className="flex-1">
-            <RentalsTable columns={columns} data={rentals} />
+            <RentalsTable columns={columns} data={rentals!} />
           </div>
           <div className="w-full lg:w-1/4 py-8">
             <RentalCard />
