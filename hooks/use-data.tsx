@@ -29,10 +29,7 @@ export const useData = () => {
         setCategories(cats.categories)
         setBrands(brs.brands)
         setWarehouses(whs.warehouses)
-        const formattedUsers = users?.map((user: IUser) => ({
-          id: user.id,
-          name: `${user.firstname} ${user.lastname}`,
-        }))
+        const formattedUsers = users?.selectUsers
         setUsers(formattedUsers || null)
       } catch (err: unknown) {
         setError("Erreur lors du chargement des données.")

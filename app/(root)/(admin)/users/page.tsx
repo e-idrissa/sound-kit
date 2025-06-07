@@ -8,7 +8,7 @@ import { columns } from '@/components/global/users-table/columns'
 import { getAllUsers } from '@/lib/actions/user.actions'
 
 const UsersPage = async () => {
-  const users = await getAllUsers()
+  const { formattedUsers } = await getAllUsers()
   return (
     <div className=''>
       <div className="relative w-96">
@@ -23,7 +23,7 @@ const UsersPage = async () => {
         </div>
         <div className="w-full flex flex-col lg:flex-row gap-8">
           <div className="flex-1">
-            <UsersTable columns={columns} data={users!} />
+            <UsersTable columns={columns} data={formattedUsers!} />
           </div>
           <div className="w-full lg:w-1/4">
             <UserCard />

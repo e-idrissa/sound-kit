@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const newInstrumentSchema = z.object({
-  quantity: z.number().min(1, {
+  quantity: z.string().min(1, {
     message: "Missing quantity"
   }),
   categoryId: z.string().min(2, {

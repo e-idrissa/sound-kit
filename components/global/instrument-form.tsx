@@ -29,7 +29,6 @@ import z from 'zod';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { createQRCode } from '@/lib/actions/qrCode.actions';
 import { createInstrument, editInstrument } from '@/lib/actions/intrument.actions';
 import { useData } from '@/hooks/use-data';
 
@@ -52,23 +51,13 @@ const NewInstrumentForm = ({ onSuccess }: InstrumentFormProps) => {
       state: "new",
       situation: "available",
       warehouseId: "",
-      quantity: 1
+      quantity: "1"
     },
   })
 
   async function onSubmit(data: z.infer<typeof newInstrumentSchema>) {
     try {
-      const qrCode = await createQRCode()
-      let qrCodeId: string | null = null
-
-      if (qrCode.success) {
-        qrCodeId = qrCode.qrCode!.id
-      } else {
-        toast.error("Error creating QR Code");
-        return
-      }
-
-      const res = await createInstrument({ ...data, qrCodeId })
+      const res = await createInstrument(data)
       if (res.success) {
         toast.success("Instrument created successfully");
         router.refresh();

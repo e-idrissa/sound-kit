@@ -152,11 +152,7 @@
     @apply bg-background text-foreground;
   }
 
-  .w-open {
-    width: calc(100vw - 16rem);
-  }
-
-  .w-close {
-    width: calc(100vw - 4rem);
+  .font-courier {
+    font-family: 'Courier Prime', monospace;
   }
 }

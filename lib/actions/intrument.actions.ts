@@ -4,28 +4,40 @@ import { prisma } from "@/lib/database/prisma"
 import { handleError } from "@/lib/utils"
 import { revalidatePath } from "next/cache"
 import { v4 as uuid } from "uuid"
+import { createQRCode } from "./qrCode.actions"
 
 export async function createInstrument(data: createInstrumentParams) {
+  const quantity = Number(data.quantity) || 1
+
   try {
-    const instrument = await prisma.instrument.create({
-      data: {
-        id: uuid(),
-        qrCodeId: data.qrCodeId,
-        categoryId: data.categoryId,
-        brandId: data.brandId,
-        warehouseId: data.warehouseId,
-        state: data.state,
-        isAffected: false,
-        situation: "available",
-        inUse: false,
-        userId: undefined,
-      },
-    })
+    const instruments = await Promise.all(
+      Array.from({ length: quantity }).map(async () => {
+        const { qrCode, success } = await createQRCode()
+        if (!success || !qrCode) throw new Error("QR Code generation failed")
+
+        const instrument = await prisma.instrument.create({
+          data: {
+            id: uuid(),
+            qrCodeId: qrCode.id,
+            categoryId: data.categoryId,
+            brandId: data.brandId,
+            warehouseId: data.warehouseId,
+            state: data.state,
+            isAffected: false,
+            situation: "available",
+            inUse: false,
+            userId: undefined,
+          },
+        })
+
+        return instrument
+      })
+    )
     
-    return { instrument, success: true }
+    return { instruments, success: true }
   } catch (error) {
     handleError({ error, message: "Error creating instrument" })
-    return { instrument: null, success: false }
+    return { instruments: null, success: false }
   }
 }
 
@@ -64,11 +76,21 @@ export async function deleteInstrument(id: string) {
         id
       },
     })
+
+    const qrCode = await prisma.qRCode.delete({
+      where: {
+        id: instrument.qrCodeId
+      },
+    })
     
-    return { instrument, success: true }
+    return { 
+      instrument,
+      qrCode,
+      success: true 
+    }
   } catch (error) {
     handleError({ error, message: "Error deleting instrument" })
-    return { instrument: null, success: false }
+    return { instrument: null, qrCode: null, success: false }
   }
 }
 
@@ -155,6 +177,14 @@ export async function getInstrumentById(id: string) {
 }
 
 export async function getInstrumentsByUserId(userId: string) {
+  const categoryColorMap: Record<string, string> = {
+    guitar: "var(--color-guitar)",
+    bass: "var(--color-bass)",
+    micro: "var(--color-micro)",
+    piano: "var(--color-piano)",
+    others: "var(--color-others)",
+  }
+
   try {
     const instruments = await prisma.instrument.findMany({
       where: {
@@ -192,6 +222,19 @@ export async function getInstrumentsByUserId(userId: string) {
       userId: instrument.userId,
       isAffected: instrument.isAffected,
       inUse: instrument.inUse,
+    }))
+
+    const categoryCounts: Record<string, number> = {}
+
+    formattedInstruments.forEach(({ category }) => {
+      const key = category?.toLowerCase() || "others"
+      categoryCounts[key] = (categoryCounts[key] || 0) + 1
+    })
+
+    const chartData = Object.entries(categoryCounts).map(([category, count]) => ({
+      category,
+      count,
+      fill: categoryColorMap[category] || "var(--color-others)",
     }))
 
     const recentInstruments = await prisma.instrument.findMany({
@@ -241,6 +284,7 @@ export async function getInstrumentsByUserId(userId: string) {
       instruments: formattedInstruments,
       instrumentsCount: instruments.length,
       recentInstruments: formattedRecentInstruments, 
+      chartData,
       success: true 
     }
   } catch (error) {
@@ -249,6 +293,7 @@ export async function getInstrumentsByUserId(userId: string) {
       instruments: null, 
       instrumentsCount: 0,
       recentInstruments: null,
+      chartData: null,
       success: false 
     }
   }
@@ -275,5 +320,35 @@ export async function toggleInstrumentUsage(id: string) {
   } catch (error) {
     handleError({ error, message: "Error getting instruments" })
     return { success: false, updated: null }
+  }
+}
+
+export async function getAvailableInstruments() {
+  try {
+    const instruments = await prisma.instrument.findMany({
+      where: {
+        inUse: false,
+        situation: "available"
+      },
+      include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+          }
+        }
+      }
+    })
+
+    const formattedInstruments = instruments.map((instrument) => ({
+      id: instrument.id,
+      categoryId: instrument.categoryId,
+      category: instrument.category?.name || null,
+    }))
+    
+    return { instruments: formattedInstruments, success: true }
+  } catch (error) {
+    handleError({ error, message: "Error getting instruments" })
+    return { instruments: null, success: false }
   }
 }

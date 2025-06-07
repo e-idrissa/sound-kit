@@ -44,6 +44,7 @@ type PasswordFieldProps = {
 
 type ListActionsProps = {
   id: string
+  type: string
 }
 
 type UICardProps = {
@@ -109,4 +110,35 @@ type ResetPasswordProps = {
 
 type PasswordFormProps = {
   userId: string
+}
+
+type RentalFormProps = {
+  userId: string
+  instruments: {
+    id: string,
+    categoryId: string
+    category: string | null
+  }[],
+  reasons: {
+    id: string,
+    name: string
+  }[]
+}
+
+type ComboboxProps = {
+  options: {
+    id: string,
+    label: string,
+  }[]
+  selected: string[]
+  onChange: (values: string[]) => void
+  placeholder?: string
+}
+
+type ChartDataProps = {
+  chartData: {
+    category: string
+    count: number
+    fill: string
+  }[]
 }

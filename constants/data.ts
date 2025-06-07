@@ -179,7 +179,7 @@ export const instruments = [
 export const chartData = [
   { category: "guitar", count: 275, fill: "var(--color-guitar)" },
   { category: "bass", count: 200, fill: "var(--color-bass)" },
-  { category: "drums", count: 287, fill: "var(--color-drums)" },
+  { category: "micro", count: 287, fill: "var(--color-micro)" },
   { category: "piano", count: 173, fill: "var(--color-piano)" },
   { category: "others", count: 190, fill: "var(--color-others)" },
 ]
@@ -187,7 +187,7 @@ export const chartData = [
 export const categories = [
   { category: "guitar", count: 275, },
   { category: "bass", count: 200, },
-  { category: "drums", count: 287, },
+  { category: "micro", count: 287, },
   { category: "piano", count: 173, },
   { category: "others", count: 190, },
 ]

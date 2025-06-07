@@ -10,6 +10,7 @@ import { InstrumentsChart } from './_components/chart'
 import { InstrumentDialog } from '@/components/global/instrument-dialog'
 import { getAuthToken } from '@/lib/actions/auth.actions'
 import { getInstrumentsByUserId } from '@/lib/actions/intrument.actions'
+import { getRentalsByUserId } from '@/lib/actions/rental.actions'
 
 const HomePage = async () => {
   const jwt = await getAuthToken() as IJWT
@@ -17,7 +18,8 @@ const HomePage = async () => {
 
   const isAdmin = jwt.role === "ADMIN"
 
-  const { instruments, instrumentsCount } = await getInstrumentsByUserId(jwt.userId!)
+  const { instruments, instrumentsCount, chartData } = await getInstrumentsByUserId(jwt.userId!)
+  const { totalRentals } = await getRentalsByUserId(jwt.userId!)
 
   return (
     <div className='w-full'>
@@ -52,11 +54,11 @@ const HomePage = async () => {
             />
             <UICard
               label={'My Rentals'}
-              amount={103}
+              amount={totalRentals!}
               icon={ScrollText}
             />
           </div>
-          <InstrumentsChart />
+          <InstrumentsChart chartData={chartData!} />
         </div>
       </div>
     </div>

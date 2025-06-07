@@ -37,7 +37,7 @@ export async function handleSignIn(values: SignInParams) {
   const valid = await bcrypt.compare(password, user.password)
   if (!valid) throw new Error('Invalid password')
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, SECRET, { expiresIn: '1h' })
+  const token = jwt.sign({ userId: user.id, role: user.role }, SECRET, { expiresIn: '8h' })
 
     ; (await cookies()).set("token", token, {
       httpOnly: true,

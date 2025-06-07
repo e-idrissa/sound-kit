@@ -84,11 +84,12 @@ type ICategory = {
 
 type IRental = {
   id: string
+  rentalId: string
   qrCodeId: string
   user: string
   startDate: Date
   endDate: Date
-  status: "pending" | "approved" | "rejected" | "closed"
+  status: string
   rentalReason: string
 }
 
@@ -115,3 +116,18 @@ type IRequestReason = {
   name: string
 }
 
+type IPendingRental = {
+  rental: {
+    rentalId: string;
+    user: string;
+    startDate: Date;
+    endDate: Date;
+    status: string;
+    rentalReason: string;
+    instruments: number;
+  }
+}
+
+type IPendingRentals = {
+  rentals: IPendingRental[]
+}
