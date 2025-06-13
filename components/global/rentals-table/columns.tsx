@@ -1,14 +1,17 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, Loader2, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import ContentDialog from "@/components/global/content-dialog"
-import { useState } from "react"
-import { deleteRental } from "@/lib/actions/rental.actions"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, CheckCheck, Loader2, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import ContentDialog from "@/components/global/content-dialog";
+import { useState } from "react";
+import {
+  deleteRental,
+  updateExpiredRental,
+} from "@/lib/actions/rental.actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<IRental>[] = [
   {
@@ -18,21 +21,21 @@ export const columns: ColumnDef<IRental>[] = [
   {
     accessorKey: "qrCodeId",
     header: () => {
-      return <div className="hidden">QR Code</div>
+      return <div className="hidden">QR Code</div>;
     },
     cell: ({ row }) => {
-      const val = row.getValue("qrCodeId") as string
-      return <p className="hidden">{val}</p>
+      const val = row.getValue("qrCodeId") as string;
+      return <p className="hidden">{val}</p>;
     },
   },
   {
     accessorKey: "rentalReason",
     header: () => {
-      return <div>Reason</div>
+      return <div>Reason</div>;
     },
     cell: ({ row }) => {
-      const val = row.getValue("rentalReason") as string
-      return <p className="capitalize">{val}</p>
+      const val = row.getValue("rentalReason") as string;
+      return <p className="capitalize">{val}</p>;
     },
   },
   {
@@ -46,11 +49,11 @@ export const columns: ColumnDef<IRental>[] = [
           Starts At
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const val = row.getValue("startDate") as Date
-      return <p className="ml-3">{val.toDateString()}</p>
+      const val = row.getValue("startDate") as Date;
+      return <p className="ml-3">{val.toDateString()}</p>;
     },
   },
   {
@@ -65,11 +68,11 @@ export const columns: ColumnDef<IRental>[] = [
           Ends At
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const val = row.getValue("endDate") as Date
-      return <p className="ml-3  hidden lg:block">{val.toDateString()}</p>
+      const val = row.getValue("endDate") as Date;
+      return <p className="ml-3  hidden lg:block">{val.toDateString()}</p>;
     },
   },
   {
@@ -84,48 +87,84 @@ export const columns: ColumnDef<IRental>[] = [
           Status
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const val = row.getValue("status") as string
-      const variant = val === "active" ? "var1"
-        : val === "closed" ? "var2"
-          : val === "pending" ? "var4"
-            : "var5"
-      return <Badge variant={variant} className="capitalize ml-2  hidden lg:block">{val}</Badge>
+      const val = row.getValue("status") as string;
+      const variant =
+        val === "active"
+          ? "var1"
+          : val === "closed"
+          ? "var2"
+          : val === "pending"
+          ? "var4"
+          : "var5";
+      return (
+        <Badge variant={variant} className="capitalize ml-2  hidden lg:block">
+          {val}
+        </Badge>
+      );
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const rental = row.original
+      const rental = row.original;
+      const isCompleted = rental.endDate < new Date();
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const router = useRouter()
+      const router = useRouter();
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      const [loading, setLoading] = useState(false)
+      const [loading, setLoading] = useState(false);
+
       const handleDeletion = async () => {
-        setLoading(true)
-        const { success, message } = await deleteRental(rental.rentalId)
-        setLoading(false)
+        setLoading(true);
+        const { success, message } = await deleteRental(rental.rentalId);
+        setLoading(false);
         if (success) {
-          toast.success(message)
-          router.refresh()
+          toast.success(message);
+          router.refresh();
         } else {
-          toast.error(message)
+          toast.error(message);
         }
-      }
+      };
+      const handleExpiredRental = async () => {
+        setLoading(true);
+        const { success } = await updateExpiredRental(rental.id);
+        setLoading(false);
+        if (success) {
+          toast.success("Rental expired successfully");
+          router.refresh();
+        } else {
+          toast.error("Failed to expire rental");
+        }
+      };
       return (
         <div className="flex items-center w-10 md:w-20">
           <ContentDialog isRental={true} rental={rental} />
-          <Button variant="ghost" size="sm" onClick={handleDeletion} disabled={loading || rental.status === "active"}>
+          {isCompleted && (
+            <Button
+              className="bg-green-600/0 hover:bg-green-600/20 text-green-600"
+              size="sm"
+              onClick={handleExpiredRental}
+              disabled={loading || rental.status === "closed"}
+            >
+              <CheckCheck className="size-4" />
+            </Button>
+          )}
+          <Button
+            className="bg-red-500/0 hover:bg-red-500/20 text-red-500"
+            size="sm"
+            onClick={handleDeletion}
+            disabled={loading || rental.status === "active"}
+          >
             {loading ? (
-              <Loader2 className="size-4 animate-spin" />
+              <Loader2 className="text-muted-foreground size-4 animate-spin" />
             ) : (
-              <Trash2 className="size-4 text-red-500 hover:text-red-500!" />
+              <Trash2 className="size-4" />
             )}
           </Button>
         </div>
-      )
+      );
     },
   },
-]
+];
